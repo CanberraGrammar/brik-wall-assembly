@@ -1,0 +1,352 @@
+<html>
+
+	<head>
+
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+		<style>
+
+			/* MAIN IMAGE STYLES */
+
+			#main-image-container {
+				display: block;
+			}
+
+			#main-image-container #full-image table tr td {
+				width: 64px;
+				height: 64px;
+				min-width: 64px;
+				min-height: 64px;
+				background-repeat: no-repeat;
+				background-size: 64px 64px;
+				font-family: sans-serif;
+				font-size: 14px;
+				text-align: center;
+				vertical-align: middle;
+				color: white;
+				image-rendering: -moz-crisp-edges;
+			    image-rendering: -o-crisp-edges;
+			    image-rendering: -webkit-optimize-contrast;
+			    -ms-interpolation-mode: nearest-neighbor;
+			    image-rendering: pixelated;
+			}
+
+			#main-image-container #full-image table tr td {
+				border: 1px solid darkgray;
+			}
+
+			#main-image-container #full-image table tr td .info-overlay {
+				height: 100%;
+				width: 100%;
+				background-color: rgba(1,1,1,0.5);
+				display: flex;
+				justify-content: center;
+				flex-direction: column;
+				text-align: center;
+				visibility: visible;
+			}
+
+			#main-image-container #controls {
+				font-family: sans-serif;
+				font-size: 18px;
+				position: fixed;
+    			top: 50px;
+    			right: 50px;
+			}
+
+			#main-image-container #controls div {
+				margin-top: 100px;
+			}
+
+			#main-image-container #controls label:last-child {
+				margin-left: 200px;
+			}
+
+			/* SECTION IMAGE STYLES */
+
+			#section-image-container {
+				display: none;
+			}
+
+			#section-image-container #section-image {
+				width: 594px;
+				height: 594px;
+				background-repeat: no-repeat;
+				background-size: 576px 576px;
+				background-position: 18px 18px;
+				image-rendering: -moz-crisp-edges;
+			    image-rendering: -o-crisp-edges;
+			    image-rendering: -webkit-optimize-contrast;
+			    -ms-interpolation-mode: nearest-neighbor;
+			    image-rendering: pixelated;
+			}
+
+			#section-image-container #section-image table {
+		    	width: 100%;
+		    	height: 100%;
+		    	border-right: 1px solid black;
+		    	border-bottom: 1px solid black;
+		    	table-layout: fixed;
+			}
+
+			#section-image-container #section-image table td {
+			    border: 1px solid black;
+			    padding: 0;
+			    margin: 0;
+			    font-size: 8px;
+			    font-family: sans-serif;
+			    text-align: center;
+			}
+
+			#section-image-container #section-image table td.red-line-right {
+				border-right: 1px solid red;
+			}
+
+			#section-image-container #section-image table td.red-line-left {
+				border-left: 1px solid red;
+			}
+
+			#section-image-container #section-image table tr.red-line-bottom td {
+				border-bottom: 1px solid red;
+			}
+
+			#section-image-container #section-image table tr.red-line-top td {
+				border-top: 1px solid red;
+			}
+
+			#section-image-container #section-image table tr.first-row, #section-image-container #section-image table tr.first-row td {
+				border-top: none;
+			}
+
+			#section-image-container #section-image table td.first-col {
+				border-left: 1px solid white;
+			}
+
+			#section-image-container #controls {
+				position: fixed;
+    			top: 50px;
+    			right: 50px;
+			}
+
+			#section-image-container #controls #currentImage {
+				font-family: sans-serif;
+				font-size: 36px;
+				margin-top: 20px;
+			}
+
+		</style>
+
+	</head>
+
+	<body>
+
+		<div id="main-image-container">
+
+			<div id="full-image"></div>
+
+			<div id="controls">
+				
+				<div><label><input type="checkbox" id="grid-checkbox" value="grid-checkbox" checked> Grid</label></div>
+				<div><label><input type="checkbox" id="overlay-checkbox" value="overlay-checkbox" checked> Overlay</label></div>
+
+			</div>
+
+		</div>
+
+		<div id="section-image-container">
+
+			<div id="section-image"></div>
+
+			<div id="controls">
+				
+				<div id="currentImage"><a href="#">Current Image</a></div>
+
+			</div>
+
+		</div>
+
+
+		<script>
+
+			/* ----------------------------------------------------------------------------------------------- */
+
+			/* CHANGE THESE VARIABLES TO SET THE HEIGHT AND WIDTH OF YOUR DESIGN (IN TERMS OF NUMBER OF TILES) */
+
+			var tilesHorizontal = 10; // 10 tiles across
+			var tilesVertical = 12; // 12 tiles down
+
+			// So, 120 tiles in total
+
+			// For example, if the slices are named brik-wall_01.jpg, brik-wall_02.jpg, etc. then the filename
+			// prefix would be "brik-wall". Do not include the underscore _ in the prefix.
+			var fileNamePrefix = "brik-wall";
+
+			/* ----------------------------------------------------------------------------------------------- */
+
+			/* MAIN IMAGE SCRIPTS */
+
+			function loadImage() {
+
+				var imageIndexNum = 1;
+
+				var output = '<table cellspacing="0" cellpadding="0">';
+
+				for (var row = 0; row < tilesVertical; row++) {
+
+					for (var col = 1; col <= tilesHorizontal; col++) {
+
+						if (col == 1) {
+
+							output += "<tr>";
+
+						}
+
+						imageIndexString = String(imageIndexNum);
+
+						if (imageIndexNum <= 9) {
+							imageIndexString = "0" + String(imageIndexNum);
+						}
+
+						output += "<td id=\"" + imageIndexString + "\"style=\"background-image:url('images/" + fileNamePrefix + "_" + imageIndexString + ".jpg');\"><div class=\"info-overlay\">" + imageIndexString + "</div></td>";
+
+						if (col == tilesHorizontal) {
+
+							output += "</tr>";
+
+						}
+
+						imageIndexNum = imageIndexNum + 1;
+
+					}
+
+				}
+
+				output += '</table>';
+
+				$("#main-image-container #full-image").html(output);
+
+			}
+
+			$(document).ready(function() {
+				loadImage();
+			});
+
+			$("#main-image-container #full-image").on("click", "td", function() {
+								
+				$("#section-image-container #section-image").css("background-image", "url('images/" + fileNamePrefix + "_" + $(this).attr("id") + ".jpg')");
+				
+				$("#section-image-container #controls #currentImage a").text("Tile: " + $(this).attr("id"));
+				$("#section-image-container #controls #currentImage").on("click", "a", function() {
+					$("#section-image-container").hide();
+					$("#main-image-container").show();
+				});
+
+				$("#main-image-container").hide();
+				$("#section-image-container").show();
+
+			});
+
+			$('#main-image-container #controls #grid-checkbox:checkbox').click(function(){
+				if (this.checked) {
+					$('#main-image-container table tr td').css("border", "1px solid darkgray");
+				}
+				else {
+					$('#main-image-container table tr td').css("border", "none");
+				}
+			});
+
+			$('#main-image-container #controls #overlay-checkbox:checkbox').click(function(){
+				if (this.checked) {
+					$('#main-image-container table tr td .info-overlay').css("visibility", "visible");
+				}
+				else {
+					$('#main-image-container table tr td .info-overlay').css("visibility", "hidden");
+				}
+			});
+
+
+			/* SECTION IMAGE SCRIPTS */
+
+			function drawGrid() {
+
+				var output = '<table cellspacing="0" cellpadding="0">';
+
+				for (var row = 1; row <= 33; row++) {
+
+					for (var col = 1; col <= 33; col++) {
+
+						if (col == 1) {
+
+							if (row == 1) {
+								output += "<tr class=\"first-row\">";
+							}
+
+							else if ((row == 8) || (row == 18) || (row == 27)) {
+								output += "<tr class=\"red-line-bottom\">";
+							}
+
+							else if ((row == 9) || (row == 19) || (row == 28)) {
+								output += "<tr class=\"red-line-top\">";
+							}
+
+							else {
+								output += "<tr>";
+							}
+
+						}
+
+
+
+						if (((row == 1) && (col == 1)) || (col == 1)) {
+							output += "<td class=\"first-col\">" + (row - 1) + "</td>";
+							/*output += "<td class=\"first-col\">" + "</td>";*/
+						}
+
+						else if (row == 1) {
+							output += "<td>" + (col - 1) + "</td>";
+							/*output += "<td>" + "</td>";*/
+						}						
+
+						else if ((col == 8) || (col == 17) || (col == 27)) {
+							if (((row == 8) && (col != 17)) || ((row == 18) && (col == 17)) || ((row == 27) && (col != 17))) {
+								output += "<td class=\"red-line-right\">X</td>";
+							}
+							else {
+								output += "<td class=\"red-line-right\"></td>";
+							}
+						}
+
+						else if ((col == 9) || (col == 18) || (col == 28)) {
+							output += "<td class=\"red-line-left\"></td>";
+						}
+
+						else {
+							output += "<td></td>";
+						}
+
+
+
+						if (col == 33) {
+							output += "</tr>";
+						}
+
+
+					}
+
+				}
+
+				output += '</table>';
+
+				$("#section-image-container #section-image").html(output);
+
+			}
+
+			$(document).ready(function() {
+				drawGrid();
+			});
+
+		</script>
+
+	</body>
+
+</html>
